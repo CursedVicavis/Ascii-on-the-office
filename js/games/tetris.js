@@ -87,8 +87,20 @@ window.GameTetris = (function () {
   let bestScore = 0;
   let lines = 0;
   let level = 1;
+  let milestonesAwarded = 0;
   let paused = false;
   let gameOver = false;
+
+  function checkScoreMilestones() {
+    const m = Math.floor(score / 1000);
+    if (m > milestonesAwarded) {
+      const diff = m - milestonesAwarded;
+      milestonesAwarded = m;
+      if (window.OfficeStats && window.OfficeStats.awardTycoonWinPoints) {
+        window.OfficeStats.awardTycoonWinPoints(diff, 'Tetris (1000 pts)');
+      }
+    }
+  }
 
   function refillBag() {
     const keys = Object.keys(SHAPES);
@@ -230,6 +242,7 @@ window.GameTetris = (function () {
       bestScore = score;
       if (window.OfficeStats) window.OfficeStats.recordGameWin('tetris', score);
     }
+    checkScoreMilestones();
 
     spawnPiece();
     updateView();
@@ -240,6 +253,7 @@ window.GameTetris = (function () {
     if (!collides(current.matrix, current.x, current.y + 1)) {
       current.y++;
       score += 1;
+      checkScoreMilestones();
       updateView();
     } else {
       lockPiece();
@@ -254,6 +268,7 @@ window.GameTetris = (function () {
       dropped++;
     }
     score += dropped * 2;
+    checkScoreMilestones();
     lockPiece();
   }
 
@@ -291,6 +306,7 @@ window.GameTetris = (function () {
     score = 0;
     lines = 0;
     level = 1;
+    milestonesAwarded = 0;
     paused = false;
     gameOver = false;
     if (window.OfficeStats) {
@@ -396,6 +412,7 @@ ${renderMiniPreview(holdType)}
 │  <span class="ascii-info">${String(bestScore).padStart(8, '0')}</span>  │
 │ Líneas: ${String(lines).padStart(3, ' ')}│
 │ Nivel : ${String(level).padStart(3, ' ')}│
+│ Gane  : <span class="ascii-bright">+${String(milestonesAwarded).padStart(2, '0')}</span>│
 └────────────┘`;
   }
 

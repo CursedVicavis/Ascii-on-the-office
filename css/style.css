@@ -388,11 +388,69 @@ pre.ascii-art {
   white-space: pre;
 }
 
+/* Grid de Cuadros Específicos para Fuga de Ovejas (Pastoreo con Mouse) */
+.corral-grid {
+  display: grid;
+  grid-template-columns: repeat(24, 32px);
+  grid-template-rows: repeat(16, 26px);
+  gap: 1px;
+  background-color: var(--fg-dim);
+  border: 2px solid var(--fg-primary);
+  user-select: none;
+  cursor: pointer;
+}
+
+.corral-cell {
+  width: 32px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  line-height: 1;
+  background-color: var(--bg-primary);
+  color: var(--fg-primary);
+  overflow: hidden;
+}
+
+.corral-cell.cell-escape {
+  background-color: rgba(255, 68, 68, 0.14);
+  color: var(--accent-danger);
+  font-size: 11px;
+}
+
+.corral-cell.cell-wall {
+  background-color: var(--bg-highlight);
+  color: var(--accent-warn);
+  font-weight: bold;
+}
+
+.corral-cell.cell-gate {
+  background-color: rgba(0, 229, 255, 0.18);
+  color: var(--accent-info);
+  font-weight: bold;
+}
+
+.corral-cell.cell-inside {
+  background-color: rgba(51, 255, 51, 0.12);
+  color: var(--fg-bright);
+}
+
 @media (max-width: 768px) {
   html, body {
     font-size: 11px;
   }
   .ascii-btn {
+    font-size: 11px;
+  }
+  .corral-grid {
+    grid-template-columns: repeat(24, 22px);
+    grid-template-rows: repeat(16, 20px);
+  }
+  .corral-cell {
+    width: 22px;
+    height: 20px;
     font-size: 11px;
   }
 }

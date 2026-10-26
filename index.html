@@ -11,30 +11,34 @@
   <div id="boss-overlay" aria-hidden="true"></div>
 
   <div class="ascii-screen">
-    <!-- Barra de Sistema Superior -->
+    <!-- Barra de Navegación Principal (Minijuegos | Granja Tycoon | Tienda) -->
     <header>
       <div class="bar-controls">
         <div class="bar-group">
-          <button class="ascii-btn active" id="btn-home">[⌂ TERMINAL CENTRAL]</button>
-          <button class="ascii-btn" id="btn-theme">[T] Monitor: Fósforo Verde</button>
+          <button class="ascii-btn active" id="nav-minigames">[🕹️ MINIJUEGOS]</button>
+          <button class="ascii-btn" id="nav-farm">[🌱 GRANJA TYCOON]</button>
+          <button class="ascii-btn" id="nav-shop">[🏪 TIENDA]</button>
+          <span class="ascii-dim">│</span>
+          <button class="ascii-btn" id="btn-theme">[T] Monitor</button>
           <button class="ascii-btn" id="btn-crt">[L] CRT: ON</button>
           <button class="ascii-btn" id="btn-audio">[Sonido: ON ♪]</button>
         </div>
         <div class="bar-group">
+          <span id="farm-reward-toast" class="ascii-warn" style="display:none;"></span>
           <button class="ascii-btn boss-btn" id="btn-boss">[!JEFE CERCA! (F9 / TAB)]</button>
-          <span class="ascii-secondary">│ RELOJ: <b id="office-clock">--:--:--</b></span>
+          <span class="ascii-secondary">│ <b id="office-clock">--:--:--</b></span>
         </div>
       </div>
     </header>
 
-    <!-- Viewport Principal (Menú o Juego Activo) -->
+    <!-- Viewport Principal (Minijuegos / Granja / Tienda) -->
     <main id="main-viewport"></main>
 
     <!-- Barra de Estado Inferior -->
     <footer class="bottom-bar">
       <div class="bar-controls">
-        <span>OFFICE-DOS v4.20 │ 100% PURE ASCII RENDERING ENGINE</span>
-        <span>[F9 / TAB]: Ocultar Juego (Modo Excel/Consola) │ [ESC]: Menú Principal</span>
+        <span>ASCI ON THE OFFICE │ Juega Minijuegos para ganar Tierras, Semillas y Abono</span>
+        <span>[F9 / TAB]: Modo Jefe (Excel/Logs) │ [ESC]: Volver</span>
       </div>
     </footer>
   </div>
@@ -49,6 +53,9 @@
   <script src="js/games/game2048.js"></script>
   <script src="js/games/wordoffice.js"></script>
   <script src="js/games/solitaire.js"></script>
+  <script src="js/games/snowball.js"></script>
+  <script src="js/games/shepherd.js"></script>
+  <script src="js/games/farmer.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>
