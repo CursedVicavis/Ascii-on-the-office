@@ -242,12 +242,12 @@ window.GameMinesweeper = (function () {
       for (let c = 0; c < cols; c++) {
         const cell = grid[r][c];
         const isCur = r === curR && c === curC;
-        let cls = 'ascii-cell';
+        let cls = 'ascii-cell mine-cell';
         if (isCur) cls += ' selected';
 
         let txt = '░░░';
         if (cell.flagged && !gameOver) {
-          txt = ' ⚑ ';
+          txt = '⚑';
           if (!isCur) cls += ' mine-flag';
         } else if (cell.flagged && gameOver && !cell.mine) {
           txt = ' X ';

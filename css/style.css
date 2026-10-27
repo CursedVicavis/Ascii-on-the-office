@@ -287,6 +287,43 @@ pre.ascii-art {
   font-weight: bold;
 }
 
+.ascii-cell.hint-source {
+  background-color: var(--accent-warn) !important;
+  color: #000000 !important;
+  text-shadow: none;
+  font-weight: bold;
+}
+
+.ascii-cell.hint-target {
+  background-color: var(--accent-info) !important;
+  color: #000000 !important;
+  text-shadow: none;
+  font-weight: bold;
+  animation: hint-target-pulse 1.1s infinite alternate;
+}
+
+@keyframes hint-target-pulse {
+  from {
+    filter: brightness(1);
+    outline: 1px solid var(--accent-info);
+  }
+  to {
+    filter: brightness(1.4);
+    outline: 2px solid #ffffff;
+    box-shadow: 0 0 8px var(--accent-info);
+  }
+}
+
+.sol-msg-banner {
+  padding: 4px 8px;
+  margin: 6px 0;
+  border: 1px dashed var(--fg-secondary);
+  background: var(--bg-highlight);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.25;
+}
+
 .ascii-cell.same-num {
   background-color: var(--bg-highlight);
   color: var(--fg-bright);
@@ -306,7 +343,28 @@ pre.ascii-art {
   color: var(--accent-info);
 }
 
-/* Buscaminas colores de números */
+/* Buscaminas colores de números y casillas */
+.mine-cell {
+  width: 3ch;
+  text-align: center;
+  display: inline-block;
+  vertical-align: bottom;
+  overflow: hidden;
+  box-sizing: border-box;
+  line-height: inherit;
+}
+
+/* Culebrita Ethernet (Snake) casillas de comida y bonus */
+.snake-cell,
+.snake-food {
+  width: 2ch;
+  text-align: center;
+  display: inline-block;
+  vertical-align: bottom;
+  overflow: hidden;
+  box-sizing: border-box;
+  line-height: inherit;
+}
 .mine-1 { color: var(--accent-info); font-weight: bold; }
 .mine-2 { color: var(--fg-primary); font-weight: bold; }
 .mine-3 { color: var(--accent-danger); font-weight: bold; }

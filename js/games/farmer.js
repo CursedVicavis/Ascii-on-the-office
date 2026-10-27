@@ -13,123 +13,123 @@ window.GameFarmer = (function () {
   let shopCategory = 'lands'; // 'lands' | 'supplies' | 'upgrades' | 'lab'
   let currentNpcSpeech = '';
 
-  // Catálogo de 10 especies con economía ajustada y balanceada
+  // Catálogo de 10 especies únicas con tiempos escalonados (desde 10m aumentando 2m por especie)
   const PLANTS = {
     cactus: {
       id: 'cactus',
       name: 'Cactus Monitor',
       tier: 1,
-      growTime: 28,
+      growTime: 600, // 10 min
       waterRate: 2.0,
       cashYield: 8,
       seedYield: 1,
       shopPrice: 18,
       asciiStages: ['  ·.·  ', '  \\|/  ', '  \\Ψ/  ', ' 🌵\\Ψ/🌵'],
-      desc: 'Resistente a la sequía. Da $8 y 1 semilla.'
-    },
-    cafe: {
-      id: 'cafe',
-      name: 'Cafeto Express',
-      tier: 1,
-      growTime: 34,
-      waterRate: 2.8,
-      cashYield: 12,
-      seedYield: 1,
-      shopPrice: 24,
-      asciiStages: ['  ·o·  ', '  {y}  ', ' {☕}  ', '☕{☕}☕'],
-      desc: 'Grano energético. Da $12 y 1 semilla.'
-    },
-    bambu: {
-      id: 'bambu',
-      name: 'Bambú Feng-Shui',
-      tier: 1,
-      growTime: 40,
-      waterRate: 3.0,
-      cashYield: 15,
-      seedYield: 1,
-      shopPrice: 30,
-      asciiStages: ['  │·│  ', '  │╫│  ', ' ║╫║╫║ ', '🎋║╫║🎋'],
-      desc: 'Planta de recepción. Da $15 y 1 semilla.'
+      desc: 'Resistente a la sequía (~10m). Da $8 y 1 semilla.'
     },
     suculenta: {
       id: 'suculenta',
       name: 'Suculenta USB',
       tier: 1,
-      growTime: 30,
+      growTime: 720, // 12 min
       waterRate: 2.2,
       cashYield: 10,
       seedYield: 1,
       shopPrice: 22,
       asciiStages: ['  (·)  ', '  (*)  ', ' (❀*❀) ', '💠(❀)💠'],
-      desc: 'Brote compacto. Da $10 y 1 semilla.'
+      desc: 'Brote compacto (~12m). Da $10 y 1 semilla.'
+    },
+    cafe: {
+      id: 'cafe',
+      name: 'Cafeto Express',
+      tier: 1,
+      growTime: 840, // 14 min
+      waterRate: 2.8,
+      cashYield: 12,
+      seedYield: 1,
+      shopPrice: 24,
+      asciiStages: ['  ·o·  ', '  {y}  ', ' {☕}  ', '☕{☕}☕'],
+      desc: 'Grano energético (~14m). Da $12 y 1 semilla.'
+    },
+    bambu: {
+      id: 'bambu',
+      name: 'Bambú Feng-Shui',
+      tier: 1,
+      growTime: 960, // 16 min
+      waterRate: 3.0,
+      cashYield: 15,
+      seedYield: 1,
+      shopPrice: 30,
+      asciiStages: ['  │·│  ', '  │╫│  ', ' ║╫║╫║ ', '🎋║╫║🎋'],
+      desc: 'Planta de recepción (~16m). Da $15 y 1 semilla.'
     },
     // --- TIER 2: HÍBRIDOS (Los cruces permiten multiplicar semillas: dan 2 semillas) ---
-    bonsai: {
-      id: 'bonsai',
-      name: 'Bonsái Ejecutivo',
-      tier: 2,
-      growTime: 48,
-      waterRate: 2.8,
-      cashYield: 28,
-      seedYield: 2,
-      asciiStages: ['  ,.,  ', '  (♣)  ', ' (♣♣♣) ', '🌳♣♣♣🌳'],
-      desc: 'Híbrido (Cactus + Bambú). Genera $28 y 2 semillas.'
-    },
-    espresso: {
-      id: 'espresso',
-      name: 'Árbol Espresso',
-      tier: 2,
-      growTime: 52,
-      waterRate: 3.2,
-      cashYield: 34,
-      seedYield: 2,
-      asciiStages: ['  ~o~  ', '  {♨}  ', ' ♨{☕}♨ ', '⚡☕☕☕⚡'],
-      desc: 'Híbrido (Cafeto + Bambú). Genera $34 y 2 semillas.'
-    },
     cibercactus: {
       id: 'cibercactus',
       name: 'Ciber-Cactus',
       tier: 2,
-      growTime: 46,
+      growTime: 1080, // 18 min
       waterRate: 2.0,
       cashYield: 30,
       seedYield: 2,
       asciiStages: ['  [·]  ', ' [\\Ψ/] ', '⚡[\\Ψ/]⚡', '🛰️\\Ψ/🛰️'],
-      desc: 'Híbrido (Cactus + Suculenta). Genera $30 y 2 semillas.'
+      desc: 'Híbrido (Cactus + Suculenta, ~18m). Genera $30 y 2 semillas.'
+    },
+    bonsai: {
+      id: 'bonsai',
+      name: 'Bonsái Ejecutivo',
+      tier: 2,
+      growTime: 1200, // 20 min
+      waterRate: 2.8,
+      cashYield: 28,
+      seedYield: 2,
+      asciiStages: ['  ,.,  ', '  (♣)  ', ' (♣♣♣) ', '🌳♣♣♣🌳'],
+      desc: 'Híbrido (Cactus + Bambú, ~20m). Genera $28 y 2 semillas.'
     },
     helecho_crt: {
       id: 'helecho_crt',
       name: 'Helecho Neón',
       tier: 2,
-      growTime: 50,
+      growTime: 1320, // 22 min
       waterRate: 3.0,
       cashYield: 36,
       seedYield: 2,
       asciiStages: ['  *·*  ', '  ❈❇❈  ', ' ❇❈❇❈❇ ', '✨❈❇❈✨'],
-      desc: 'Híbrido (Cafeto + Suculenta). Genera $36 y 2 semillas.'
+      desc: 'Híbrido (Cafeto + Suculenta, ~22m). Genera $36 y 2 semillas.'
+    },
+    espresso: {
+      id: 'espresso',
+      name: 'Árbol Espresso',
+      tier: 2,
+      growTime: 1440, // 24 min
+      waterRate: 3.2,
+      cashYield: 34,
+      seedYield: 2,
+      asciiStages: ['  ~o~  ', '  {♨}  ', ' ♨{☕}♨ ', '⚡☕☕☕⚡'],
+      desc: 'Híbrido (Cafeto + Bambú, ~24m). Genera $34 y 2 semillas.'
     },
     // --- TIER 3: MEGA-HÍBRIDOS ---
     arbol_bonos: {
       id: 'arbol_bonos',
       name: 'Árbol Dividendos',
       tier: 3,
-      growTime: 65,
+      growTime: 1560, // 26 min
       waterRate: 3.2,
       cashYield: 75,
       seedYield: 2,
       asciiStages: ['  $·$  ', '  [$]  ', ' $[¥]$ ', '💰$¥$💰'],
-      desc: 'Mega-Híbrido (Bonsái + Espresso). Da $75 y 2 semillas.'
+      desc: 'Mega-Híbrido (Bonsái + Espresso, ~26m). Da $75 y 2 semillas.'
     },
     servidor_gaia: {
       id: 'servidor_gaia',
       name: 'Bio-Servidor Gaia',
       tier: 3,
-      growTime: 70,
+      growTime: 1680, // 28 min
       waterRate: 2.8,
       cashYield: 95,
       seedYield: 3,
       asciiStages: ['  <❀>  ', ' ╔═❀═╗ ', ' ♛╔❀╗♛ ', '👑♛❀♛👑'],
-      desc: 'Mega-Híbrido (Ciber-Cactus + Helecho). Da $95 y 3 semillas.'
+      desc: 'Mega-Híbrido (Ciber-Cactus + Helecho, ~28m). Da $95 y 3 semillas.'
     }
   };
 
@@ -203,6 +203,9 @@ window.GameFarmer = (function () {
         state = {
           ...state,
           ...parsed,
+          waterTank: typeof parsed.waterTank === 'number' ? parsed.waterTank : 100,
+          maxWaterTank: typeof parsed.maxWaterTank === 'number' ? parsed.maxWaterTank : 100,
+          fertilizer: typeof parsed.fertilizer === 'number' ? parsed.fertilizer : 1,
           seeds: { ...state.seeds, ...(parsed.seeds || {}) }
         };
         if (!Array.isArray(state.visitedDates)) {
@@ -243,76 +246,72 @@ window.GameFarmer = (function () {
   }
 
   // =========================================================================
-  // GENERADOR DE FRASES DINÁMICAS DE "STEVE EJECUTIVO" AL ENTRAR A LA TIENDA
-  // Reacciona a: Hora del día, Días jugando, Cantidad de semillas y Progreso
+  // GENERADOR DE DIÁLOGO DINÁMICO INDIVIDUAL DE "STEVE EJECUTIVO"
+  // Solo dice UN diálogo a la vez, reaccionando a la situación del jugador
   // =========================================================================
-  function generateSteveGreeting() {
+  function generateSingleSteveDialogue() {
     const hour = new Date().getHours();
     const days = getDaysPlayingCount();
     const totalSeeds = Object.values(state.seeds).reduce((a, b) => a + b, 0);
     const unlockedPlots = state.plots.filter(p => p.unlocked).length;
     const plantedPlots = state.plots.filter(p => p.unlocked && p.plantId).length;
     const dryPlots = state.plots.filter(p => p.unlocked && p.plantId && p.water <= 15).length;
+    const readyHarvests = state.plots.filter(p => p.unlocked && p.plantId && p.growth >= 100).length;
     const hybridsUnlocked = state.discovered.length - 4;
 
-    // 1. Comentario según la HORA DEL DÍA
-    let timePhrase = '';
-    if (hour >= 0 && hour < 6) {
-      timePhrase = `¿Son las ${hour}:00 de la madrugada y sigues en la oficina? Cuidado con los Phantoms al salir.`;
-    } else if (hour >= 6 && hour < 12) {
-      timePhrase = `Buenos días, socio. Corbata planchada, maletín cuadrado listo y el mercado abriendo.`;
-    } else if (hour >= 12 && hour < 15) {
-      timePhrase = `Hora del almuerzo. Yo traje una chuleta cocinada en mi maletín, ¿tú qué vas a llevar?`;
-    } else if (hour >= 15 && hour < 19) {
-      timePhrase = `Media tarde en la oficina... La mejor hora para cerrar tratos agrícolas sin que el jefe mire.`;
-    } else {
-      timePhrase = `Buenas noches. Ya casi apagan las antorchas del piso, hagamos esta transacción rápido.`;
-    }
+    const candidates = [];
 
-    // 2. Comentario según los DÍAS QUE LLEVAS JUGANDO
-    let daysPhrase = '';
-    if (days <= 1) {
-      daysPhrase = `Veo que es tu Día #1 por aquí. Antes picaba bloques de diamante, ahora dirijo este puesto ejecutivo.`;
-    } else if (days <= 3) {
-      daysPhrase = `Ya llevas ${days} días operando conmigo. Se nota que te gusta el contrabando botánico.`;
-    } else if (days <= 7) {
-      daysPhrase = `${days} días en el negocio... Ya eres cliente VIP de mi maletín corporativo.`;
-    } else {
-      daysPhrase = `¡${days} días traficado semillas juntos! Ya somos socios mayoritarios de esta azotea.`;
+    // Prioridad 1: Alertas críticas de recursos
+    if (state.waterTank <= 0) {
+      candidates.push('¡Ojo, socio! Tu tanque está en 0L. Compra garrafas o ve a ganar minijuegos para regar.');
     }
-
-    // 3. Comentario según tu CANTIDAD DE SEMILLAS y DINERO
-    let seedPhrase = '';
-    if (totalSeeds === 0) {
-      seedPhrase = `Traes el inventario con 0 semillas, más vacío que cofre saqueado. Gana minijuegos si quieres materia prima.`;
-    } else if (totalSeeds <= 2) {
-      seedPhrase = `Solo tienes ${totalSeeds} semilla(s) en reserva. Adminístralas con cabeza cuadrada, están escasas.`;
-    } else if (totalSeeds <= 6) {
-      seedPhrase = `Veo que guardas ${totalSeeds} semillas en el almacén. Buen colchón de activos.`;
-    } else {
-      seedPhrase = `¡Tienes ${totalSeeds} semillas acumuladas! Pareces aldeano granjero en plena cosecha.`;
-    }
-
-    // 4. Comentario según el PROGRESO DEL JARDÍN
-    let gardenPhrase = '';
     if (dryPlots > 0) {
-      gardenPhrase = `Por cierto: tienes ${dryPlots} planta(s) secándose allá afuera. Échales un cubo de agua antes de que paren.`;
-    } else if (plantedPlots === 0) {
-      gardenPhrase = `Tu jardín tiene 0 plantas sembradas ahora mismo. La tierra vacía no genera esmeraldas, amigo.`;
-    } else if (hybridsUnlocked > 0) {
-      gardenPhrase = `Me impresionan tus ${hybridsUnlocked} especie(s) híbrida(s) descubiertas y tus ${unlockedPlots}/16 tierras activas.`;
-    } else if (unlockedPlots <= 2) {
-      gardenPhrase = `Apenas tienes ${unlockedPlots}/16 parcelas abiertas (con ${plantedPlots} sembrada(s)). Juega más para expandir el chunk.`;
-    } else {
-      gardenPhrase = `Tu huerta va tomando forma: ${unlockedPlots}/16 tierras desbloqueadas y ${ state.totalHarvests } cosechas cerradas.`;
+      candidates.push(`Tienes ${dryPlots} planta(s) secándose allá afuera. ¡Riegas antes de que se marchiten!`);
+    }
+    if (readyHarvests > 0) {
+      candidates.push(`¡Tienes ${readyHarvests} cultivo(s) al 100% listos para cosechar! Ve por tus ganancias a la azotea.`);
+    }
+    if (totalSeeds === 0) {
+      candidates.push('Traes el inventario con 0 semillas, más vacío que cofre saqueado. Gana minijuegos.');
+    }
+    if (state.fertilizer <= 0 && plantedPlots > 0) {
+      candidates.push('El abono acelera tus cultivos x2.2. ¡Cómprame unos sacos o gana minijuegos para renovar stock!');
     }
 
-    return {
-      timePhrase,
-      daysPhrase,
-      seedPhrase,
-      gardenPhrase
-    };
+    // Prioridad 2: Tips de economía y recursos limitados
+    candidates.push('Recuerda: el agua y el abono son limitados. ¡Juega y gana minijuegos para renovar suministros!');
+    candidates.push('Gana en Solitario, Buscaminas o Sudoku para llenar tu tanque (+45L agua) y obtener abonos.');
+    candidates.push('En juegos continuos como Snake o Typing, cada 1,000 pts te dan +25L de agua fresca.');
+
+    // Prioridad 3: Hora del día
+    if (hour >= 0 && hour < 6) {
+      candidates.push(`¿Son las ${hour}:00 de la madrugada y sigues aquí? Cuidado con los Phantoms al salir del cubículo.`);
+    } else if (hour >= 6 && hour < 12) {
+      candidates.push('Buenos días, socio. Corbata planchada, maletín listo y el mercado de semillas abriendo.');
+    } else if (hour >= 12 && hour < 15) {
+      candidates.push('Hora del almuerzo. Yo traje chuleta cocinada en mi maletín, ¿tú qué vas a llevar hoy?');
+    } else if (hour >= 15 && hour < 19) {
+      candidates.push('Media tarde en la oficina... Buena hora para cerrar tratos agrícolas sin que el jefe mire.');
+    } else {
+      candidates.push('Buenas noches. Ya casi apagan las antorchas del piso, hagamos esta transacción rápido.');
+    }
+
+    // Prioridad 4: Días de juego y progreso
+    if (days <= 1) {
+      candidates.push('Veo que es tu Día #1 por aquí. Antes picaba bloques de diamante, hoy dirijo este puesto ejecutivo.');
+    } else if (days <= 3) {
+      candidates.push(`Ya llevas ${days} días operando conmigo. Se nota que te gusta el contrabando botánico.`);
+    } else if (days <= 7) {
+      candidates.push(`${days} días en el negocio... Ya eres cliente VIP de mi maletín corporativo.`);
+    } else {
+      candidates.push(`¡${days} días traficando semillas juntos! Ya somos socios mayoritarios de esta azotea.`);
+    }
+
+    if (hybridsUnlocked > 0) {
+      candidates.push(`Me impresionan tus ${hybridsUnlocked} híbrido(s) descubiertos y tus ${unlockedPlots}/16 tierras activas.`);
+    }
+
+    return candidates[Math.floor(Math.random() * candidates.length)];
   }
 
   function setLog(msg) {
@@ -375,14 +374,23 @@ window.GameFarmer = (function () {
       const plot = state.plots[i];
       if (!plot.unlocked) continue;
 
+      // Riego automático: consume agua del tanque con el nuevo balance (10L = 100% agua)
       if (plot.hasSprinkler || state.sprinklerLevel >= 2) {
-        if (plot.water < 100) {
-          plot.water = Math.min(100, plot.water + 15);
+        if (plot.water < 100 && state.waterTank > 0) {
+          const addPct = Math.min(1.5, 100 - plot.water);
+          const costLiters = Math.min(addPct * 0.1, state.waterTank);
+          const effectiveAdd = costLiters / 0.1;
+          plot.water = Math.min(100, Math.round((plot.water + effectiveAdd) * 10) / 10);
+          state.waterTank = Math.max(0, Math.round((state.waterTank - costLiters) * 100) / 100);
           changed = true;
         }
       } else if (state.sprinklerLevel === 1) {
-        if (plot.water < 100) {
-          plot.water = Math.min(100, plot.water + 4);
+        if (plot.water < 90 && state.waterTank > 0) {
+          const addPct = Math.min(0.5, 100 - plot.water);
+          const costLiters = Math.min(addPct * 0.1, state.waterTank);
+          const effectiveAdd = costLiters / 0.1;
+          plot.water = Math.min(100, Math.round((plot.water + effectiveAdd) * 10) / 10);
+          state.waterTank = Math.max(0, Math.round((state.waterTank - costLiters) * 100) / 100);
           changed = true;
         }
       }
@@ -392,7 +400,8 @@ window.GameFarmer = (function () {
       if (!spec) continue;
 
       if (plot.growth < 100 && plot.water > 0) {
-        plot.water = Math.max(0, plot.water - spec.waterRate * 0.45);
+        // Consumo de agua adaptado a los tiempos de 10m-28m (100% de agua dura entre 7 y 10 minutos)
+        plot.water = Math.max(0, plot.water - spec.waterRate * 0.08);
         let baseRate = 100 / spec.growTime;
         if (plot.water >= 70) baseRate *= 1.2;
         if (plot.fertilized) baseRate *= 2.2;
@@ -418,30 +427,49 @@ window.GameFarmer = (function () {
     }
   }
 
-  // Recompensa muy reducida: solo al ganar una partida (1 sola semilla base)
+  // Recompensa al ganar minijuegos (Solitario, Buscaminas, Sudoku, Wordle):
+  // Rellena agua (+45L), entrega 1 semilla y 1 saco de abono
   function grantMinigameReward(reason = 'victoria') {
     if (reason !== 'victoria') return '';
     const tier1Keys = ['cactus', 'cafe', 'bambu', 'suculenta'];
     const pick = tier1Keys[Math.floor(Math.random() * tier1Keys.length)];
     state.seeds[pick] = (state.seeds[pick] || 0) + 1;
-    let msg = `+1 Semilla ${PLANTS[pick].name}`;
-    if (Math.random() < 0.35) {
-      state.fertilizer += 1;
-      msg += `, +1 Abono`;
-    }
+
+    const prevWater = state.waterTank;
+    state.waterTank = Math.min(state.maxWaterTank, (state.waterTank || 0) + 45);
+    const waterGained = Math.round(state.waterTank - prevWater);
+
+    state.fertilizer = (state.fertilizer || 0) + 1;
+
     saveState();
-    return msg;
+    const waterPart = waterGained > 0 ? `+${waterGained}L Agua, ` : 'Tanque Lleno, ';
+    return `${waterPart}+1 Abono, +1 Semilla ${PLANTS[pick].name}`;
   }
 
-  // Bono moderado cada 1,000 puntos (1 semilla y $6 por hito)
+  // Bono por cada 1,000 puntos en minijuegos continuos (Snake, Typing, etc.):
+  // Rellena agua (+25L), otorga semillas, efectivo y abono periódico
   function grantWinPointBonus(count = 1) {
     const tier1Keys = ['cactus', 'cafe', 'bambu', 'suculenta'];
     const pick = tier1Keys[Math.floor(Math.random() * tier1Keys.length)];
     const cashAdded = 6 * count;
     state.cash += cashAdded;
     state.seeds[pick] = (state.seeds[pick] || 0) + 1;
+
+    const waterAdd = 25 * count;
+    const prevWater = state.waterTank;
+    state.waterTank = Math.min(state.maxWaterTank, (state.waterTank || 0) + waterAdd);
+    const waterGained = Math.round(state.waterTank - prevWater);
+
+    let fertGained = 0;
+    if (count >= 2 || Math.random() < 0.6) {
+      fertGained = Math.max(1, Math.floor(count / 2));
+      state.fertilizer = (state.fertilizer || 0) + fertGained;
+    }
+
     saveState();
-    return `+$${cashAdded}, +1 Semilla ${PLANTS[pick].name}`;
+    const waterPart = waterGained > 0 ? `+${waterGained}L Agua, ` : '';
+    const fertPart = fertGained > 0 ? `, +${fertGained} Abono` : '';
+    return `${waterPart}+$${cashAdded}, +1 Semilla ${PLANTS[pick].name}${fertPart}`;
   }
 
   function unlockPlot(idx) {
@@ -496,31 +524,66 @@ window.GameFarmer = (function () {
     plot.growth = 0;
     plot.fertilized = false;
     window.AsciiAudio.click();
-    setLog(`Plantaste ${PLANTS[seedId].name} en la Parcela #${idx + 1}.`);
+    setLog(`Plantaste ${PLANTS[seedId].name} en la Parcela #${idx + 1} (⏱ Crecimiento estimado: ~${formatTime(PLANTS[seedId].growTime)}).`);
     saveState();
     render();
   }
 
+  const WATER_PER_PCT = 0.1; // 10L equivalen al 100% de hidratación en una parcela
+
   function waterPlot(idx) {
     const plot = state.plots[idx];
     if (!plot.unlocked) return;
-    plot.water = 100;
+    if (plot.water >= 100) {
+      setLog(`La Parcela #${idx + 1} ya tiene 100% de agua.`);
+      return;
+    }
+    if (state.waterTank <= 0) {
+      window.AsciiAudio.error();
+      setLog(`¡Tanque de agua vacío (0L)! Gana minijuegos o compra garrafas a Steve en la Tienda.`);
+      return;
+    }
+    const neededPct = 100 - plot.water;
+    const neededLiters = neededPct * WATER_PER_PCT;
+    const pouredLiters = Math.min(neededLiters, state.waterTank);
+    const addedPct = pouredLiters / WATER_PER_PCT;
+
+    state.waterTank = Math.max(0, Math.round((state.waterTank - pouredLiters) * 10) / 10);
+    plot.water = Math.min(100, Math.round((plot.water + addedPct) * 10) / 10);
     window.AsciiAudio.move();
-    setLog(`Parcela #${idx + 1} regada al 100%.`);
+    setLog(`Parcela #${idx + 1} regada (+${Math.round(addedPct)}% · -${Math.round(pouredLiters * 10) / 10}L). Tanque restante: ${Math.round(state.waterTank)}/${state.maxWaterTank}L.`);
     saveState();
     render();
   }
 
   function waterAllPlots() {
+    if (state.waterTank <= 0) {
+      window.AsciiAudio.error();
+      setLog(`¡Tanque de agua vacío (0L)! Gana minijuegos o compra garrafas a Steve en la Tienda.`);
+      return;
+    }
     let count = 0;
+    let usedLiters = 0;
     for (const p of state.plots) {
       if (p.unlocked && p.water < 100) {
-        p.water = 100;
+        if (state.waterTank <= 0) break;
+        const neededPct = 100 - p.water;
+        const neededLiters = neededPct * WATER_PER_PCT;
+        const pouredLiters = Math.min(neededLiters, state.waterTank);
+        const addedPct = pouredLiters / WATER_PER_PCT;
+
+        state.waterTank = Math.max(0, Math.round((state.waterTank - pouredLiters) * 10) / 10);
+        p.water = Math.min(100, Math.round((p.water + addedPct) * 10) / 10);
+        usedLiters += pouredLiters;
         count++;
       }
     }
-    window.AsciiAudio.score();
-    setLog(`Riego completado: ${count} parcelas hidratadas.`);
+    if (count > 0) {
+      window.AsciiAudio.score();
+      setLog(`Riego: ${count} parcelas hidratadas (-${Math.round(usedLiters * 10) / 10}L). Tanque: ${Math.round(state.waterTank)}/${state.maxWaterTank}L.`);
+    } else {
+      setLog(`Todas las parcelas ya tienen agua al 100%.`);
+    }
     saveState();
     render();
   }
@@ -703,18 +766,100 @@ window.GameFarmer = (function () {
       }
     } else {
       if (plot.plantId) {
-        if (plot.growth >= 100) harvestPlot(idx);
-        else render();
+        if (plot.growth >= 100) {
+          harvestPlot(idx);
+        } else {
+          const spec = PLANTS[plot.plantId];
+          const secLeft = getEstimatedSecondsLeft(plot);
+          const fertMsg = plot.fertilized ? ' | Abono: ★ Activo (x2.2)' : ' | Sin abono';
+          const pauseMsg = plot.water <= 0 ? ' [Pausa: falta agua]' : '';
+          setLog(`Parcela #${idx + 1}: ${spec.name} (${Math.floor(plot.growth)}% · ⏱ ${formatTime(secLeft)} restantes${pauseMsg}) | Agua: ${Math.round(plot.water)}%${fertMsg}.`);
+          render();
+        }
       } else {
         plantSeedOnPlot(idx, selectedSeedId);
       }
     }
   }
 
-  function makeAsciiBar(pct, width = 5, fillChar = '█', emptyChar = '░') {
-    const clamped = Math.max(0, Math.min(100, pct));
-    const filled = Math.round((clamped / 100) * width);
-    return fillChar.repeat(filled) + emptyChar.repeat(width - filled);
+  function formatTime(sec) {
+    if (sec <= 0) return '0s';
+    const m = Math.floor(sec / 60);
+    const s = sec % 60;
+    if (m === 0) return `${s}s`;
+    if (s === 0) return `${m}m`;
+    return `${m}m ${s}s`;
+  }
+
+  function formatTimerCompact(sec) {
+    if (sec <= 0) return '0:00';
+    const m = Math.floor(sec / 60);
+    const s = sec % 60;
+    return `${m}:${String(s).padStart(2, '0')}`;
+  }
+
+  function getVisualWidth(str) {
+    const clean = str.replace(/<[^>]+>/g, '');
+    let w = 0;
+    for (const ch of clean) {
+      const code = ch.codePointAt(0);
+      if (
+        (code >= 0x1F300 && code <= 0x1FAFF) || // Emojis: 🌵, 💧, 💰, 👑, etc.
+        code === 0x2615 ||                      // ☕
+        code === 0x23F1 ||                      // ⏱
+        code === 0x26A1 ||                      // ⚡
+        (code >= 0x4E00 && code <= 0x9FFF)      // CJK
+      ) {
+        w += 2;
+      } else {
+        w += 1;
+      }
+    }
+    return w;
+  }
+
+  function padVisual(str, targetWidth = 14) {
+    const vis = getVisualWidth(str);
+    if (vis >= targetWidth) return str.slice(0, targetWidth);
+    const totalPad = targetWidth - vis;
+    const leftPad = Math.floor(totalPad / 2);
+    const rightPad = totalPad - leftPad;
+    return ' '.repeat(leftPad) + str + ' '.repeat(rightPad);
+  }
+
+  function padRightVisual(str, targetW = 64) {
+    const w = getVisualWidth(str);
+    if (w >= targetW) return str;
+    return str + ' '.repeat(targetW - w);
+  }
+
+  function wrapTextToLines(text, maxLen = 56) {
+    const words = text.split(' ');
+    const lines = [];
+    let cur = '';
+    for (const w of words) {
+      if ((cur ? cur + ' ' + w : w).length <= maxLen) {
+        cur = cur ? cur + ' ' + w : w;
+      } else {
+        if (cur) lines.push(cur);
+        cur = w;
+      }
+    }
+    if (cur) lines.push(cur);
+    return lines;
+  }
+
+  function getEstimatedSecondsLeft(plot) {
+    if (!plot.plantId || plot.growth >= 100) return 0;
+    const spec = PLANTS[plot.plantId];
+    if (!spec) return 0;
+    let rate = 100 / spec.growTime;
+    if (plot.water >= 70) rate *= 1.2;
+    if (plot.fertilized) rate *= 2.2;
+    if (getNeighbors(plot.id).some(n => state.plots[n].plantId === 'servidor_gaia')) {
+      rate *= 1.35;
+    }
+    return Math.max(1, Math.ceil((100 - plot.growth) / rate));
   }
 
   function renderSinglePlotLines(idx) {
@@ -723,18 +868,21 @@ window.GameFarmer = (function () {
     const isCrossSrc = crossFirstPlotIdx === idx;
     const played = window.OfficeStats ? window.OfficeStats.getGamesPlayed() : 0;
 
-    const topBorder = isSel ? '╔════════════════╗' : '┌────────────────┐';
-    const botBorder = isSel ? '╚════════════════╝' : '└────────────────┘';
+    const topBorder = isSel ? '╔══════════════╗' : '┌──────────────┐';
+    const botBorder = isSel ? '╚══════════════╝' : '└──────────────┘';
     const s = isSel ? '║' : '│';
 
     if (!plot.unlocked) {
       const req = PLOT_UNLOCK_REQS[idx];
       const canUnlock = played >= req;
+      const l1 = `  TIERRA #${String(idx + 1).padStart(2, '0')}  `;
+      const l2 = ` Req: ${String(req).padStart(2, ' ')} Gane `;
+      const l3 = canUnlock ? `[DESBLOQUEAR!]` : ` [BLOQUEADA]  `;
       return [
         topBorder,
-        `${s}<span class="${canUnlock ? 'ascii-warn' : 'ascii-dim'}">  TIERRA #${String(idx + 1).padStart(2, '0')}    </span>${s}`,
-        `${s}<span class="ascii-dim">  Req: ${String(req).padStart(2, ' ')} Gane  </span>${s}`,
-        `${s}<span class="${canUnlock ? 'ascii-bright' : 'ascii-dim'}"> ${canUnlock ? '[DESBLOQUEAR!]' : ' [BLOQUEADA]  '} </span>${s}`,
+        `${s}<span class="${canUnlock ? 'ascii-warn' : 'ascii-dim'}">${l1}</span>${s}`,
+        `${s}<span class="ascii-dim">${l2}</span>${s}`,
+        `${s}<span class="${canUnlock ? 'ascii-bright' : 'ascii-dim'}">${l3}</span>${s}`,
         botBorder
       ];
     }
@@ -745,34 +893,49 @@ window.GameFarmer = (function () {
     if (!plot.plantId) {
       return [
         topBorder,
-        `${s} ${header}  [VACÍA]  ${s}`,
-        `${s}<span class="ascii-dim">    . · . ·     </span>${s}`,
-        `${s}<span class="ascii-info"> [Clic:Plantar] </span>${s}`,
+        `${s} ${header} [VACÍA] ${s}`,
+        `${s}   . · . ·    ${s}`,
+        `${s}[Clic:Plantar]${s}`,
         botBorder
       ];
     }
 
     const spec = PLANTS[plot.plantId];
     const stageIdx = plot.growth >= 100 ? 3 : plot.growth >= 66 ? 2 : plot.growth >= 33 ? 1 : 0;
-    const art = spec.asciiStages[stageIdx].padStart(8, ' ').padEnd(10, ' ');
-    const gBar = makeAsciiBar(plot.growth, 5, '█', '░');
-    const wBar = makeAsciiBar(plot.water, 5, '▓', '·');
+    const art = padVisual(spec.asciiStages[stageIdx].trim(), 14);
     const crossReady = getAvailableCrossForPlot(idx);
 
-    let foot = '';
-    if (isCrossSrc) foot = `<span class="ascii-warn"> [CRUZANDO...]  </span>`;
-    else if (plot.growth >= 100) foot = `<span class="ascii-warn"> [¡COSECHAR $!] </span>`;
-    else if (plot.water <= 0) foot = `<span class="ascii-danger"> [¡REGAR AGUA!] </span>`;
-    else if (crossReady) foot = `<span class="ascii-info"> [♥CRUCE LISTO] </span>`;
-    else foot = ` C:[${gBar}] A:[${wBar}]`;
+    let footContent = '';
+    let footCls = '';
 
-    const artCls = plot.growth >= 100 ? 'ascii-warn' : spec.tier === 3 ? 'ascii-info' : 'ascii-bright';
+    if (isCrossSrc) {
+      footContent = padVisual('[CRUZANDO...]', 14);
+      footCls = 'ascii-warn';
+    } else if (plot.growth >= 100) {
+      footContent = padVisual('[¡COSECHAR!]', 14);
+      footCls = 'ascii-warn';
+    } else if (plot.water <= 0) {
+      footContent = padVisual('[¡FALTA AGUA!]', 14);
+      footCls = 'ascii-danger';
+    } else if (crossReady) {
+      footContent = padVisual('[♥CRUCE OK]', 14);
+      footCls = 'ascii-info';
+    } else {
+      const secLeft = getEstimatedSecondsLeft(plot);
+      const waterPct = Math.round(plot.water);
+      footContent = padVisual(`⏱${formatTimerCompact(secLeft)} 💧${waterPct}%`, 14);
+      footCls = plot.water <= 15 ? 'ascii-danger' : (plot.fertilized ? 'ascii-bright' : '');
+    }
+
+    const artCls = plot.growth >= 100 ? 'ascii-warn' : (spec.tier === 3 ? 'ascii-info' : 'ascii-bright');
+    const nameTrunc = spec.name.slice(0, 9).padEnd(9, ' ');
+    const line1 = `${header} ${nameTrunc}`;
 
     return [
       topBorder,
-      `${s} ${header} ${spec.name.slice(0, 9).padEnd(9, ' ')} ${s}`,
-      `${s}   <span class="${artCls}">${art}</span>   ${s}`,
-      `${s}${foot}${s}`,
+      `${s}${line1}${s}`,
+      `${s}<span class="${artCls}">${art}</span>${s}`,
+      `${s}<span class="${footCls}">${footContent}</span>${s}`,
       botBorder
     ];
   }
@@ -804,7 +967,8 @@ window.GameFarmer = (function () {
   function buildTopStatsText() {
     const played = window.OfficeStats ? window.OfficeStats.getGamesPlayed() : 0;
     const unlockedCount = state.plots.filter(p => p.unlocked).length;
-    return `CAPITAL: <span class="ascii-warn">$${state.cash}</span> │ PTS DE GANE: <span class="ascii-info">${played}</span> │ TIERRAS: <span class="ascii-bright">${unlockedCount}/16</span> │ ABONO: <span class="ascii-warn">${state.fertilizer}</span>`;
+    const waterCls = state.waterTank <= 20 ? 'ascii-danger' : 'ascii-info';
+    return `CAPITAL: <span class="ascii-warn">$${state.cash}</span> │ AGUA: <span class="${waterCls}">${Math.round(state.waterTank)}/${state.maxWaterTank}L</span> │ ABONO: <span class="ascii-warn">${state.fertilizer}</span> │ TIERRAS: <span class="ascii-bright">${unlockedCount}/16</span> │ GANE: <span class="ascii-dim">${played}</span>`;
   }
 
   // =========================================================================
@@ -815,7 +979,9 @@ window.GameFarmer = (function () {
       const count = state.seeds[p.id] || 0;
       if (!state.discovered.includes(p.id) && count === 0) return '';
       const activeCls = selectedSeedId === p.id && currentTool === 'plant' ? 'active' : '';
-      return `<button class="ascii-btn ${activeCls}" data-seed="${p.id}">• ${p.name.padEnd(15)} (x${count})</button>`;
+      const namePart = p.name.slice(0, 13).padEnd(13, ' ');
+      const timePart = `~${formatTime(p.growTime)}`.padStart(5, ' ');
+      return `<button class="ascii-btn ${activeCls}" data-seed="${p.id}">• ${namePart} ${timePart} (x${count})</button>`;
     }).filter(Boolean).join('\n');
 
     containerEl.innerHTML = `
@@ -897,24 +1063,50 @@ ${seedButtonsHtml}
 
   // =========================================================================
   // VISTA 2: PANTALLA DE TIENDA CON EL NPC "STEVE DE MINECRAFT CON TRAJE"
+  // Solo dice UN diálogo a la vez, con botón para conversar
   // =========================================================================
   function buildSteveNpcBannerHtml() {
-    const speech = currentNpcSpeech || generateSteveGreeting();
-    const wrapLine = (txt, len = 58) => txt.slice(0, len).padEnd(len, ' ');
+    const speech = currentNpcSpeech || generateSingleSteveDialogue();
+    const lines = wrapTextToLines(speech, 56);
+    const l0 = padRightVisual(lines[0] || '', 56);
+    const l1 = padRightVisual(lines[1] || '', 56);
+    const l2 = padRightVisual(lines[2] || '', 56);
 
-    return `┌─────────────────────────┬────────────────────────────────────────────────────────────────┐
-│   <span class="ascii-bright">▄▄███████████████▄▄</span>   │ <span class="ascii-warn">STEVE EJECUTIVO (Gerente de Bloques y Suministros)</span>             │
-│   <span class="ascii-bright">██░░░░░░░░░░░░░░░██</span>   │ ────────────────────────────────────────────────────────────── │
-│   <span class="ascii-bright">██░░</span><span class="ascii-info">[▪]</span><span class="ascii-bright">░░░░░</span><span class="ascii-info">[▪]</span><span class="ascii-bright">░░██</span>   │ 💬 "${wrapLine(speech.timePhrase)}" │
-│   <span class="ascii-bright">██░░░░░░</span><span class="ascii-secondary">███</span><span class="ascii-bright">░░░░░░██</span>   │                                                                │
-│   <span class="ascii-bright">██░░░░</span><span class="ascii-secondary">▀▀███▀▀</span><span class="ascii-bright">░░░░██</span>   │ 💬 "${wrapLine(speech.daysPhrase)}" │
-│   <span class="ascii-bright">▀▀███████████████▀▀</span>   │                                                                │
-│  <span class="ascii-secondary">╔════╲</span>  <span class="ascii-bright">│</span><span class="ascii-danger">▼</span><span class="ascii-bright">│</span>  <span class="ascii-secondary">╱════╗</span>    │ 💬 "${wrapLine(speech.seedPhrase)}" │
-│  <span class="ascii-secondary">║ ██ ║╲</span> <span class="ascii-bright">│</span><span class="ascii-danger">█</span><span class="ascii-bright">│</span> <span class="ascii-secondary">╱║ ██ ║</span>    │                                                                │
-│  <span class="ascii-secondary">║ ██ ║</span> <span class="ascii-bright">╲│</span><span class="ascii-danger">█</span><span class="ascii-bright">│╱</span> <span class="ascii-secondary">║ ██ ║</span><span class="ascii-warn">┌─[::]─┐</span> 💬 "${wrapLine(speech.gardenPhrase)}" │
-│  <span class="ascii-secondary">╚════╩══╧═╧══╩════╝</span><span class="ascii-warn">│$CORP │</span>                                                             │
-│                     <span class="ascii-warn">└──────┘</span>                                                             │
-└─────────────────────────┴────────────────────────────────────────────────────────────────┘`;
+    const r0  = padRightVisual(' <span class="ascii-warn">STEVE EJECUTIVO (Gerente de Bloques y Suministros)</span>', 64);
+    const r1  = '─'.repeat(64);
+    const r2  = ' '.repeat(64);
+    const r3  = padRightVisual(` 💬 "${l0}"`, 64);
+    const r4  = lines[1] ? padRightVisual(`    "${l1}"`, 64) : ' '.repeat(64);
+    const r5  = lines[2] ? padRightVisual(`    "${l2}"`, 64) : ' '.repeat(64);
+    const r6  = ' '.repeat(64);
+    const r7  = padRightVisual(' <button class="ascii-btn active" id="steve-talk-btn">[💬 Hablar con Steve (Nuevo Diálogo)]</button>', 64);
+    const r8  = ' '.repeat(64);
+    const r9  = padRightVisual(' <span class="ascii-dim">💡 Tip: Juega minijuegos para recargar Agua (+45L) y Abono</span>', 64);
+    const r10 = '─'.repeat(64);
+
+    const leftLines = [
+      '   <span class="ascii-bright">▄▄███████████████▄▄</span>   ',
+      '   <span class="ascii-bright">██░░░░░░░░░░░░░░░██</span>   ',
+      '   <span class="ascii-bright">██░░</span><span class="ascii-info">[▪]</span><span class="ascii-bright">░░░░░</span><span class="ascii-info">[▪]</span><span class="ascii-bright">░░██</span>   ',
+      '   <span class="ascii-bright">██░░░░░░</span><span class="ascii-secondary">███</span><span class="ascii-bright">░░░░░░██</span>   ',
+      '   <span class="ascii-bright">██░░░░</span><span class="ascii-secondary">▀▀███▀▀</span><span class="ascii-bright">░░░░██</span>   ',
+      '   <span class="ascii-bright">▀▀███████████████▀▀</span>   ',
+      '  <span class="ascii-secondary">╔════╲</span>  <span class="ascii-bright">│</span><span class="ascii-danger">▼</span><span class="ascii-bright">│</span>  <span class="ascii-secondary">╱════╗</span>    ',
+      '  <span class="ascii-secondary">║ ██ ║╲</span> <span class="ascii-bright">│</span><span class="ascii-danger">█</span><span class="ascii-bright">│</span> <span class="ascii-secondary">╱║ ██ ║</span>    ',
+      '  <span class="ascii-secondary">║ ██ ║</span> <span class="ascii-bright">╲│</span><span class="ascii-danger">█</span><span class="ascii-bright">│╱</span> <span class="ascii-secondary">║ ██ ║</span>    ',
+      '  <span class="ascii-secondary">╚════╩══╧═╧══╩════╝</span>    ',
+      '   <span class="ascii-warn">┌─[::]─┐ [$CORP]</span>      '
+    ];
+
+    const rightLines = [r0, r1, r2, r3, r4, r5, r6, r7, r8, r9, r10];
+
+    const out = [];
+    out.push('┌─────────────────────────┬────────────────────────────────────────────────────────────────┐');
+    for (let i = 0; i < 11; i++) {
+      out.push(`│${leftLines[i]}│${rightLines[i]}│`);
+    }
+    out.push('└─────────────────────────┴────────────────────────────────────────────────────────────────┘');
+    return out.join('\n');
   }
 
   function renderShopScreen() {
@@ -938,16 +1130,27 @@ ${seedButtonsHtml}
 ${rows || '│ ¡Felicidades! Ya eres dueño de las 16 parcelas de la azotea.                     │'}
 └──────────────────────────────────────────────────────────────────────────────────┘`;
     } else if (shopCategory === 'supplies') {
+      const waterStr = `(Tanque: ${String(Math.round(state.waterTank)).padStart(3, '0')}/${state.maxWaterTank}L)`;
+      const capStr = `(Cap: ${state.maxWaterTank}L actual)`.padEnd(20, ' ');
+      const fertStr = `(Tienes: ${String(state.fertilizer).padStart(2, '0')} sacos)`;
+
       tabContentHtml = `
 ┌──────────────────────────────────────────────────────────────────────────────────┐
-│ 2. SEMILLAS INDIVIDUALES Y SACOS DE ABONO                                        │
+│ 2. SUMINISTROS BÁSICOS: AGUA, ABONO Y SEMILLAS                                   │
 ├──────────────────────────────────────────────────────────────────────────────────┤
-│ • 1x Semilla Cactus Monitor   (Tienes: ${String(state.seeds.cactus).padStart(2, '0')})    ──► <button class="ascii-btn" data-buyseed="cactus">[Comprar 1x por $18]</button>        │
-│ • 1x Semilla Suculenta USB    (Tienes: ${String(state.seeds.suculenta).padStart(2, '0')})    ──► <button class="ascii-btn" data-buyseed="suculenta">[Comprar 1x por $22]</button>        │
-│ • 1x Semilla Cafeto Express   (Tienes: ${String(state.seeds.cafe).padStart(2, '0')})    ──► <button class="ascii-btn" data-buyseed="cafe">[Comprar 1x por $24]</button>        │
-│ • 1x Semilla Bambú Feng-Shui  (Tienes: ${String(state.seeds.bambu).padStart(2, '0')})    ──► <button class="ascii-btn" data-buyseed="bambu">[Comprar 1x por $30]</button>        │
+│ • 1x Garrafa de Agua (+40L)   ${waterStr}   ──► <button class="ascii-btn active" id="shop-buy-water-40">[Comprar por $12]</button>            │
+│ • 1x Bidón de Agua (+100L)    ${waterStr}   ──► <button class="ascii-btn active" id="shop-buy-water-100">[Comprar por $25]</button>            │
+│ • Expansión Tanque (+50L Máx) ${capStr}──► <button class="ascii-btn" id="shop-upgrade-tank">[Ampliar por $60]</button>            │
 ├──────────────────────────────────────────────────────────────────────────────────┤
-│ • 1x SACO DE ABONO ACELERADOR (Tienes: <span class="ascii-warn">${String(state.fertilizer).padStart(2, '0')}</span>)    ──► <button class="ascii-btn active" id="shop-buy-fert">[Comprar 1x Abono por $15]</button>  │
+│ • 1x Saco de Abono Orgánico   ${fertStr}   ──► <button class="ascii-btn active" id="shop-buy-fert">[Comprar 1x por $15]</button>         │
+│ • 3x Lote de Abonos Ahorro    ${fertStr}   ──► <button class="ascii-btn active" id="shop-buy-fert-3">[Comprar 3x por $38]</button>         │
+├──────────────────────────────────────────────────────────────────────────────────┤
+│ • 1x Semilla Cactus Monitor   (Tienes: ${String(state.seeds.cactus).padStart(2, '0')})        ──► <button class="ascii-btn" data-buyseed="cactus">[Comprar 1x por $18]</button>          │
+│ • 1x Semilla Suculenta USB    (Tienes: ${String(state.seeds.suculenta).padStart(2, '0')})        ──► <button class="ascii-btn" data-buyseed="suculenta">[Comprar 1x por $22]</button>          │
+│ • 1x Semilla Cafeto Express   (Tienes: ${String(state.seeds.cafe).padStart(2, '0')})        ──► <button class="ascii-btn" data-buyseed="cafe">[Comprar 1x por $24]</button>          │
+│ • 1x Semilla Bambú Feng-Shui  (Tienes: ${String(state.seeds.bambu).padStart(2, '0')})        ──► <button class="ascii-btn" data-buyseed="bambu">[Comprar 1x por $30]</button>          │
+├──────────────────────────────────────────────────────────────────────────────────┤
+│ 💡 RECURSOS LIMITADOS: Juega minijuegos para renovar Agua (+45L) y Abonos!     │
 └──────────────────────────────────────────────────────────────────────────────────┘`;
     } else if (shopCategory === 'upgrades') {
       tabContentHtml = `
@@ -993,7 +1196,7 @@ ${buildSteveNpcBannerHtml()}
         <div class="bar-controls" style="width:100%; max-width:920px;">
           <div class="bar-group">
             <button class="ascii-btn ${shopCategory === 'lands' ? 'active' : ''}" data-scat="lands">[1. Comprar Tierras]</button>
-            <button class="ascii-btn ${shopCategory === 'supplies' ? 'active' : ''}" data-scat="supplies">[2. Semillas y Abono]</button>
+            <button class="ascii-btn ${shopCategory === 'supplies' ? 'active' : ''}" data-scat="supplies">[2. Agua, Abono y Semillas]</button>
             <button class="ascii-btn ${shopCategory === 'upgrades' ? 'active' : ''}" data-scat="upgrades">[3. Riego Automático]</button>
             <button class="ascii-btn ${shopCategory === 'lab' ? 'active' : ''}" data-scat="lab">[4. Cruzar Semillas]</button>
           </div>
@@ -1014,6 +1217,12 @@ ${tabContentHtml}
       if (window.AsciiOfficeApp) window.AsciiOfficeApp.openFarm();
     });
 
+    document.getElementById('steve-talk-btn')?.addEventListener('click', () => {
+      currentNpcSpeech = generateSingleSteveDialogue();
+      window.AsciiAudio.click();
+      render();
+    });
+
     containerEl.querySelectorAll('[data-scat]').forEach(btn => {
       btn.addEventListener('click', () => {
         shopCategory = btn.getAttribute('data-scat');
@@ -1028,6 +1237,92 @@ ${tabContentHtml}
       });
     });
 
+    document.getElementById('shop-buy-water-40')?.addEventListener('click', () => {
+      if (state.waterTank >= state.maxWaterTank) {
+        window.AsciiAudio.error();
+        setLog(`Steve: "Tu tanque de agua ya está completamente lleno (${state.maxWaterTank}L)."`);
+        return;
+      }
+      if (state.cash < 12) {
+        window.AsciiAudio.error();
+        setLog(`Steve: "Necesitas $12 para comprar 1 Garrafa de Agua (+40L)."`);
+        return;
+      }
+      state.cash -= 12;
+      state.waterTank = Math.min(state.maxWaterTank, state.waterTank + 40);
+      currentNpcSpeech = 'Steve: "¡Aquí tienes tu garrafa de 40L! Mantén esas raíces bien regadas, socio."';
+      window.AsciiAudio.score();
+      setLog(`Compraste 1 Garrafa de Agua (+40L) por $12. Tanque: ${Math.round(state.waterTank)}/${state.maxWaterTank}L.`);
+      saveState();
+      render();
+    });
+
+    document.getElementById('shop-buy-water-100')?.addEventListener('click', () => {
+      if (state.waterTank >= state.maxWaterTank) {
+        window.AsciiAudio.error();
+        setLog(`Steve: "Tu tanque de agua ya está completamente lleno (${state.maxWaterTank}L)."`);
+        return;
+      }
+      if (state.cash < 25) {
+        window.AsciiAudio.error();
+        setLog(`Steve: "Necesitas $25 para comprar 1 Bidón de Agua (+100L)."`);
+        return;
+      }
+      state.cash -= 25;
+      state.waterTank = Math.min(state.maxWaterTank, state.waterTank + 100);
+      currentNpcSpeech = 'Steve: "¡Bidón de 100L despachado! Tu huerto de azotea no pasará sed hoy."';
+      window.AsciiAudio.score();
+      setLog(`Compraste 1 Bidón de Agua (+100L) por $25. Tanque: ${Math.round(state.waterTank)}/${state.maxWaterTank}L.`);
+      saveState();
+      render();
+    });
+
+    document.getElementById('shop-upgrade-tank')?.addEventListener('click', () => {
+      if (state.cash < 60) {
+        window.AsciiAudio.error();
+        setLog(`Steve: "Necesitas $60 para ampliar la capacidad del tanque."`);
+        return;
+      }
+      state.cash -= 60;
+      state.maxWaterTank += 50;
+      state.waterTank += 50;
+      currentNpcSpeech = `Steve: "¡Tanque ampliado! Ahora puedes almacenar hasta ${state.maxWaterTank}L de agua."`;
+      window.AsciiAudio.win();
+      setLog(`¡Tanque ampliado a ${state.maxWaterTank}L máx (+50L agua recibida)!`);
+      saveState();
+      render();
+    });
+
+    document.getElementById('shop-buy-fert')?.addEventListener('click', () => {
+      if (state.cash < 15) {
+        window.AsciiAudio.error();
+        setLog(`Steve: "Necesitas $15 para llevarte un Saco de Abono."`);
+        return;
+      }
+      state.cash -= 15;
+      state.fertilizer += 1;
+      currentNpcSpeech = 'Steve: "1 Saco de Abono orgánico. Acelera x2.2 el crecimiento de tus plantas."';
+      window.AsciiAudio.score();
+      setLog(`Compraste +1 Saco de Abono por $15. Tienes: ${state.fertilizer}.`);
+      saveState();
+      render();
+    });
+
+    document.getElementById('shop-buy-fert-3')?.addEventListener('click', () => {
+      if (state.cash < 38) {
+        window.AsciiAudio.error();
+        setLog(`Steve: "Necesitas $38 para llevarte el Lote de 3 Abonos."`);
+        return;
+      }
+      state.cash -= 38;
+      state.fertilizer += 3;
+      currentNpcSpeech = 'Steve: "¡Lote económico de 3 Abonos entregado! Negocio redondo para ambos."';
+      window.AsciiAudio.win();
+      setLog(`Compraste 3 Sacos de Abono por $38 (Ahorro $7). Tienes: ${state.fertilizer}.`);
+      saveState();
+      render();
+    });
+
     containerEl.querySelectorAll('[data-buyseed]').forEach(btn => {
       btn.addEventListener('click', () => {
         const sId = btn.getAttribute('data-buyseed');
@@ -1039,26 +1334,12 @@ ${tabContentHtml}
         }
         state.cash -= cost;
         state.seeds[sId] = (state.seeds[sId] || 0) + 1;
-        currentNpcSpeech = generateSteveGreeting();
+        currentNpcSpeech = `Steve: "¡Semilla de ${PLANTS[sId].name} despachada! Siémbrala o úsala para cruzar especies."`;
         window.AsciiAudio.score();
         setLog(`Compraste +1 semilla de ${PLANTS[sId].name} por $${cost}.`);
         saveState();
         render();
       });
-    });
-
-    document.getElementById('shop-buy-fert')?.addEventListener('click', () => {
-      if (state.cash < 15) {
-        window.AsciiAudio.error();
-        setLog(`Steve: "Necesitas $15 para llevarte un Saco de Abono."`);
-        return;
-      }
-      state.cash -= 15;
-      state.fertilizer += 1;
-      window.AsciiAudio.score();
-      setLog(`Compraste +1 Saco de Abono por $15.`);
-      saveState();
-      render();
     });
 
     document.getElementById('shop-sprinkler-1')?.addEventListener('click', () => {
@@ -1126,7 +1407,7 @@ ${tabContentHtml}
         state.seeds[rec.result] = (state.seeds[rec.result] || 0) + 1;
         discoverPlant(rec.result);
         state.totalCrosses++;
-        currentNpcSpeech = generateSteveGreeting();
+        currentNpcSpeech = `Steve: "¡Cruce genético realizado en el maletín! Semilla de ${PLANTS[rec.result].name} lista."`;
         window.AsciiAudio.win();
         setLog(`¡Cruce creado en el maletín de Steve! +1 Semilla de ${PLANTS[rec.result].name}.`);
         saveState();
@@ -1155,7 +1436,7 @@ ${tabContentHtml}
       currentView = 'shop';
       loadState();
       state.shopVisits = (state.shopVisits || 0) + 1;
-      currentNpcSpeech = generateSteveGreeting();
+      currentNpcSpeech = generateSingleSteveDialogue();
       saveState();
       render();
     },
@@ -1170,6 +1451,8 @@ ${tabContentHtml}
       const totalSeeds = Object.values(state.seeds).reduce((a, b) => a + b, 0);
       return {
         cash: state.cash,
+        waterTank: state.waterTank,
+        maxWaterTank: state.maxWaterTank,
         unlocked,
         totalSeeds,
         fertilizer: state.fertilizer

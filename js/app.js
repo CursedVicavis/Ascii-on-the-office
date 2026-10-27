@@ -157,7 +157,7 @@ window.AsciiOfficeApp = (function () {
       title: 'SNAKE RED',
       subtitle: 'Culebrita Ethernet',
       module: () => window.GameSnake,
-      icon: '╔═════╗\n║░█@@ ║\n║   ☕ ║\n║ $$  ║\n╚═════╝'
+      icon: '╔═════╗\n║██@@ ║\n║   ☕ ║\n║ $$  ║\n╚═════╝'
     },
     {
       id: 'tetris',

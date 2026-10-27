@@ -157,17 +157,15 @@ window.GameSnake = (function () {
       grid[o.y][o.x] = '▒▒';
     }
 
-    grid[food.y][food.x] = '<span class="ascii-warn">☕</span>';
+    grid[food.y][food.x] = '<span class="snake-food ascii-warn">☕</span>';
     if (bonus) {
-      grid[bonus.y][bonus.x] = '<span class="ascii-info">$$</span>';
+      grid[bonus.y][bonus.x] = '<span class="snake-cell ascii-info">$$</span>';
     }
 
     for (let i = snake.length - 1; i >= 0; i--) {
       const s = snake[i];
       if (i === 0) {
         grid[s.y][s.x] = '<span class="ascii-bright">@@</span>';
-      } else if (i === snake.length - 1) {
-        grid[s.y][s.x] = '░░';
       } else {
         grid[s.y][s.x] = '██';
       }
@@ -246,7 +244,7 @@ window.GameSnake = (function () {
 │ Metros : <span id="snake-len">${snake.length}</span>m de cable Cat6     │
 ├──────────────────────────────┤
 │ LEYENDA DE OFICINA           │
-│  @@ ██ ░░ = Cable Ethernet   │
+│  @@ ██    = Cable Ethernet   │
 │  ☕       = Café (+10 pts)   │
 │  $$       = Bono (+50 pts)   │
 │  ▒▒       = Muro de Cubículo │
